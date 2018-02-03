@@ -52,7 +52,7 @@ class ElasticNet:
             test_samples = self.input_test_samples
         else:
             test_size = int(round(len(self.y) * self.test_split, 0))
-            test_samples = random.sample([x for x in range(len(self.y))], test_size)
+            test_samples = random.sample(self.sample_labels, test_size)
 
         # test_container/ validation_container [test_array, test_outcomes, labels]
 
