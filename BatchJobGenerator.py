@@ -23,6 +23,12 @@ class LaunchOptimizationJob:
         self.sge_output = sge_output_folder
         self.sge_user = sge_user
         self.batch_length = 0
+        self.run()
+
+    def run(self):
+        self.set_sample_list()
+        self.set_output_shell()
+        self.submit_batch_job()
 
     def set_sample_list(self):
         out = open(self.batch_input, 'w')
@@ -37,24 +43,25 @@ class LaunchOptimizationJob:
 
     def set_output_shell(self):
         out = open('%s.sh' % self.batch_path, 'w')
-        out.write('# !/bin/bash\n')
-        out.write('# $ -pe shared %s\n' % str(self.sge_cores))
-        out.write('# $ -l h_rt=%s:00:00\n' % str(self.sge_time))
-        out.write('# $ -l h_data==%sG\n' % str(self.sge_mem))
-        out.write('# $ -o %s\n' % self.sge_output)
-        out.write('# $ -e %s\n' % self.sge_output)
-        out.write('# $ -M %s\n' % self.sge_user)
-        out.write('# $ -m a\n')
+        out.write('#!/bin/bash\n')
+        out.write('#$ -pe shared %s\n' % str(self.sge_cores))
+        out.write('#$ -l h_rt=%s:00:00\n' % str(self.sge_time))
+        out.write('#$ -l h_data=%sG\n' % str(self.sge_mem))
+        out.write('#$ -o %s\n' % self.sge_output)
+        out.write('#$ -e %s\n' % self.sge_output)
+        out.write('#$ -M %s\n' % self.sge_user)
+        out.write('#$ -m a\n')
         out.write('while getopts d: option\n')
         out.write('do\n')
         out.write(' case "${option}"\n')
         out.write(' in\n')
-        out.write(' D) input_dictionary_list=${OPTARG};;\n')
+        out.write(' d) input_dictionary_list=${OPTARG};;\n')
         out.write(' esac\n')
         out.write('done\n')
         out.write('. /u/local/Modules/default/init/modules.sh\n')
         out.write('module load python/3.6.1\n')
         out.write('sample_name=$(cat $input_dictionary_list | head -${SGE_TASK_ID} | tail -1 )\n')
+        out.write('echo python3 %s -i $sample_name\n' % self.model_interface)
         out.write('python3 %s -i $sample_name\n' % self.model_interface)
         out.close()
 

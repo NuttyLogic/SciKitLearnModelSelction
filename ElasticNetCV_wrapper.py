@@ -84,12 +84,6 @@ class ElasticNet:
 
     def model_output(self):
         """
-        :param output_directory:
-        :param output_name:
-        :return:
-        -----------------------------------------
-        Model Information Output
-        Model Name
         """
         kwarg_pair = ['Test Split:%s\n' % str(self.test_split)]
         for key, value in self.en_model.get_params().items():
