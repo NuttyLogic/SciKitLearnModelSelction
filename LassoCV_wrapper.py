@@ -28,7 +28,7 @@ class LCV:
         # test_container/ train_container [array, outcomes, labels]
         self.test_container = [[], [], []]
         self.train_container = [[], [], []]
-        self.ls_model = None
+        self.la_model = None
         self.sample_labels = sample_labels
         self.regression_site_labels = regression_site_labels
         self.model_stats = None
